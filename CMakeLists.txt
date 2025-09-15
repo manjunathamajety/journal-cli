@@ -1,0 +1,2 @@
+#Project: Journal
+#Cmake file
