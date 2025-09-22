@@ -8,20 +8,20 @@
 
 inline std::int64_t timestamp(){
 
-    std::time_t* now;
+    time_t now;
     std::time(&now);
-    count
-    
-
+    return now;   
 
 }
 
+int main(){
 
-
-int entry(std::string entry){
-
-
-    if 
+    long long now;
+    now=timestamp();
+    std::ofstream file("input.txt",std::ios::app);
+    file<<now<<"::"<<"New Wrold"<<"\n";
+    file.close();
+   
 
 
 }
