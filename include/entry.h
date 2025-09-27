@@ -1,5 +1,6 @@
-//Author: Manjunatha Sarma Majety
 //This is the header file for adding an entry into the journal.
+#include <filesystem>
+#include <fstream>
 #include <cstdint>
 #include <iostream>
 #include <string>

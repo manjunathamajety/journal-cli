@@ -1,5 +1,6 @@
 #include <iostream>
 #include <entry.h>
+#include <display.h>
 
 int main(int argc,char** argv){
   
@@ -24,8 +25,7 @@ int main(int argc,char** argv){
 
         if (arg=="-l"){
             std::string ptr=argv[2];
-            std::cout<<"\n"<<ptr;
-
+            display(ptr);
 
         }
 
