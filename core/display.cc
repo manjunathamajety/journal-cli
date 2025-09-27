@@ -34,7 +34,7 @@ void display(std::string num){
     std::ifstream file("input.txt");
     if(num=="-all"){
     
-        while(std::getline(file,text)){
+        while(!file.eof()){
             std::getline(file,timestamp,':');
             std::getline(file,text);
             std::cout<<timeconvert(timestamp)<<" "<<text<<"\n";

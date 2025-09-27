@@ -12,7 +12,7 @@ inline std::int64_t timestamp(){
 void entry(std:: string txt){
 
     std::ofstream file("input.txt",std::ios::app);
-    file<<timestamp()<<":"<<txt<<"\n";
+    file<<"\n"<<timestamp()<<"::"<<txt;
     file.close();
    
 

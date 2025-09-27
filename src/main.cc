@@ -24,8 +24,8 @@ int main(int argc,char** argv){
         }
 
         if (arg=="-l"){
-            std::string ptr=argv[2];
-            display(ptr);
+            std::string str=argv[2];
+            display(str);
 
         }
 
