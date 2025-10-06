@@ -9,4 +9,4 @@ add_executable(jrnl src/main.cc core/entry.cc core/display.cc)
 
 target_include_directories(jrnl PRIVATE include )
 
-
+install(TARGETS jrnl RUNTIME DESTINATION bin)
