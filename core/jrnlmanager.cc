@@ -1,10 +1,5 @@
 #include <jrnlmanager.h>
 
-inline int int_convert(char num_char){
-    
-    int n=num_char-'0';
-    return n;
-}
 
 manager::manager(){
 
@@ -52,17 +47,17 @@ void manager::display(std::string range){
             end=jrnl_manager.size();
         }
         else{
-            start=int_convert(range[0])-1;
+            start=std::stoi(range)-1;
             end=start+1;
         }
     }
     else if(range.length()==2){
         if(range[0]=='*'){
             start=0;
-            end=int_convert(range[1]);
+            end=std::stoi(range.substr(1,range.size()));
         }
         else if(range[1]=='*'){
-            start=jrnl_manager.size()-int_convert(range[0]);
+            start=jrnl_manager.size()-std::stoi(range.substr(0,range.size()-1));
             end=jrnl_manager.size();
         }
     }
