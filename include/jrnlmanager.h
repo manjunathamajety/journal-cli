@@ -6,6 +6,7 @@
 #include <vector>
 #include <journal.h>
 #include <timestamp.h>
+
 #ifndef JRNLMANAGER_H
 #define JRNLMANAGER_H
 
@@ -25,12 +26,10 @@ class manager{
     std::vector<jrnl> jrnl_manager;
 
     public:
-    manager();
+    manager(std::string PATH);
     void addentry(std::string txt);
-    void save();
+    void save(std::string PATH);
     void display(std::string range);
 };
-
-
 
 #endif

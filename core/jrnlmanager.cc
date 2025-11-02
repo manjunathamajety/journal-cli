@@ -1,9 +1,8 @@
 #include <jrnlmanager.h>
 
-
-manager::manager(){
-
-    std::ifstream file("jrnl.txt");
+manager::manager(std::string PATH){
+    
+    std::ifstream file(PATH);
     //Initializes jrnl-objects in the jrnl_manager vector.
     std::string id,tag,stamp,txt;
     //while loops checks for if the entry can be compleltely scanned
@@ -22,7 +21,7 @@ manager::manager(){
     }
     file.close();
     //clearing the file of all entries, so as to prevent duplication while saving
-    std::ofstream clearfile("jrnl.txt",std::ios::out|std::ios::trunc); 
+    std::ofstream clearfile(PATH,std::ios::out|std::ios::trunc); 
     clearfile.close();
 
 }
@@ -74,9 +73,9 @@ void manager::display(std::string range){
 
 }
 
-void manager::save(){
+void manager::save(std::string PATH){
     
-    std::ofstream savefile("jrnl.txt",std::ios::app);
+    std::ofstream savefile(PATH,std::ios::app);
         //Loop uses jrnl_manager size as a limiting condition    
         for(int i=0;i<jrnl_manager.size();i++){
         savefile<<jrnl_manager[i].getid()<<";"<<jrnl_manager[i].gettag()<<";"<<jrnl_manager[i].getstamp()<<";"<<jrnl_manager[i].getentry()<<"\n";
