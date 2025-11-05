@@ -6,11 +6,12 @@ int main(int argc,char** argv){
       
     if (argc>3){
         std::cout<<"Error! Too many arguments!";
+        return 1;
     }
     
-        
     if (argc<3){
         std::cout<<"Error! Too few arguments!";
+        return 1;
     }
     
    if (argc==3){
@@ -35,5 +36,5 @@ int main(int argc,char** argv){
         }
 
     }
-    
+    return 0;
 }

@@ -8,13 +8,12 @@ std::int64_t timestamp(){
 
 }
 
-std::string timeconvert(std::string timestamp){
+std::string timeconvert(time_t timestamp){
 
-    time_t time=std::stoll(timestamp);
-    std::tm* localtime=std::localtime(&time);
+    std::tm* localtime=std::localtime(&timestamp);
     
     std::ostringstream oss;
-    oss<<std::put_time(localtime, "%y-%m-%d %H:%M");
+    oss<<std::put_time(localtime, "%d-%m-%y %H:%M");
     return oss.str();
 
 }

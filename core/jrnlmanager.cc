@@ -23,13 +23,16 @@ manager::manager(std::string PATH){
     //clearing the file of all entries, so as to prevent duplication while saving
     std::ofstream clearfile(PATH,std::ios::out|std::ios::trunc); 
     clearfile.close();
-
+    if(jrnl_manager.empty()){
+        id_count=0;
+    }
+    else{
+        id_count=jrnl_manager.back().getid();
+    }
 }
 
 void manager::addentry(std::string txt,char tag){
-    id_count=jrnl_manager.back().getid(); 
     jrnl_manager.emplace_back(id_count+1,tag,timestamp(),txt);
-
 }
 
 void manager::display(std::string range){
@@ -68,7 +71,7 @@ void manager::display(std::string range){
         time_t timestamp=jrnl_manager[i].getstamp();
         std::string txt=jrnl_manager[i].getentry();
         //Printing each entry with formatting 
-        std::cout<<GREEN<<id<<RESET<<" "<<tag<<" "<<GREEN<<timestamp<<RESET<<" "<<txt<<"\n";
+        std::cout<<GREEN<<id<<RESET<<" "<<tag<<" "<<GREEN<<timeconvert(timestamp)<<RESET<<" "<<txt<<"\n";
     }
 
 }
