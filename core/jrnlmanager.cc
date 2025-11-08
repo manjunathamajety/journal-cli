@@ -81,7 +81,8 @@ void manager::save(std::string PATH){
     std::ofstream savefile(PATH,std::ios::app);
         //Loop uses jrnl_manager size as a limiting condition    
         for(int i=0;i<jrnl_manager.size();i++){
-        savefile<<jrnl_manager[i].getid()<<";"<<jrnl_manager[i].gettag()<<";"<<jrnl_manager[i].getstamp()<<";"<<jrnl_manager[i].getentry()<<"\n";
+            jrnl& entry=jrnl_manager[i];
+            savefile<<entry.getid()<<";"<<entry.gettag()<<";"<<entry.getstamp()<<";"<<entry.getentry()<<"\n";
 
     }    
     
