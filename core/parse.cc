@@ -25,6 +25,7 @@ int add_handle(int argc, char** argv){
             return 0;
         }
     }
+    //input is being piped to the program
     else if(isatty(STDIN_FILENO)){
         std::getline(std::cin,entry);
         m1.addentry(entry);
@@ -32,7 +33,6 @@ int add_handle(int argc, char** argv){
         return 0;
     }
     
-    //input is given via pipe
     else{
         std::getline(std::cin,entry);
         m1.addentry(entry);
@@ -43,16 +43,20 @@ int add_handle(int argc, char** argv){
 }
 
 int display_handle(int argc, char** argv){
+    //reading the config file for path
     config c1;
     std::string PATH=c1.getpath();
+    //initializing the vector of journal entries 
     manager m1(PATH);
     std::string display_specifier;
+    // display_specifier is passed with the program call itself
     if(argc==1){
         display_specifier=argv[0];
         m1.display(display_specifier);
         m1.save(PATH);
         return 0;
     }
+    //output is being piped
     else if(isatty(STDOUT_FILENO)){
         display_specifier="*";
         m1.display(display_specifier);
@@ -60,6 +64,7 @@ int display_handle(int argc, char** argv){
         return 0;
 
     }
+    
     else{
         std::getline(std::cin,display_specifier);
         m1.display(display_specifier);

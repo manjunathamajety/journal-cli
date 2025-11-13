@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <cstdlib>
+#include <stdexcept>
 
 #ifndef CONFIG_H
 #define CONFIG_H
