@@ -59,37 +59,32 @@ void manager::addentry(std::string txt,std::string tag){
     jrnl_manager.emplace_back(id_count+1,tag,timestamp(),txt);
 }
 
-bool write_entry(int fd, std::string entry){    
-    int bytes_written = ::write(fd,entry.data(),entry.size());
-    int entry_size = entry.size();
-    if(bytes_written != entry.size()){
-        if(bytes_written == 0){
-            return false;
-        }
-        else if(bytes_written == -1){
-            return false;
-        }
-        else{
-            while(bytes_written != entry_size){
-                int partial_write = ::write(fd,entry.data()+bytes_written,entry.size()-bytes_written);
-                bytes_written = bytes_written + partial_write;
-            } 
-        }
-    }
-    return true;
-}
 
 bool write_all(int fd, std::vector<jrnl> jrnl_manager){
-    bool status;
     for(int i=0; i<jrnl_manager.size();i++){
         jrnl& entry=jrnl_manager[i]; 
         std::string entry_string=std::to_string(entry.getid())+";"+entry.gettag()+";"+std::to_string(entry.getstamp())+";"+entry.getentry()+"\n";
-        status = write_entry(fd, entry_string);
         
-        if(status == false){
-            int e = errno;
-            std::cerr<<"Couldn't write the entry, [id: "<<entry.getid()<<"]"<<std::strerror(e)<<"(errno: "<<e<<")";
-            return false;
+        ssize_t bytes_written = 0; 
+        std::size_t entry_size = entry_string.size();
+
+        while(bytes_written < entry_size){
+            ssize_t n = ::write(fd,entry_string.data()+bytes_written,entry_string.size()-bytes_written);
+            if(n == -1){
+                int e = errno;
+                std::cerr<<"jrnl: failed to write the entry "<<entry.getid()<<" "<<std::strerror(e)<<"(errno:"<<e<<")\n";
+                return false;
+            }   
+            if(n == 0){
+                int e = errno;
+                std::cerr<<"jrnl: failed to write the entry"<<entry.getid()<<" "<<std::strerror(e)<<"(errno:"<<e<<")\n";
+                return false;
+            }
+            else{
+                bytes_written += static_cast<std::size_t>(n);
+            }
+
+
         }
     }
     return true;
