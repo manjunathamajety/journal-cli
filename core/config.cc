@@ -10,7 +10,7 @@ config::config(){
 
     if(xdg_config == nullptr && home == nullptr){
         //bailing out if there's no home
-        throw std::runtime_error("jrnl: Mate, your system is so weird, it's HOME-less");
+        throw std::runtime_error("Mate, your system is so weird, it's HOME-less");
     }
     else if( xdg_config != nullptr){
         //if xdg_config is set, using it
@@ -24,19 +24,19 @@ config::config(){
     //checking if the config directory exists
     std::filesystem::path config_dir = std::filesystem::path(config_path).parent_path();
     if(!std::filesystem::exists(config_dir)){
-        std::cout<<"jrnl: To tell your journal where you would wanna store your secrets...." <<config_dir<<std::endl;
+        std::cout<<"To tell your journal where you would wanna store your secrets...." <<config_dir<<std::endl;
         std::filesystem::create_directories(config_dir);
     }
 
     //creating the file with default values, if it doesn't exist
     if(!std::filesystem::exists(config_path)){
-        std::cout<<"jrnl: Your journal couldn't find where to store your secrets. Due to the lack of choice, storing it in a default location -_-"
+        std::cout<<"Your journal couldn't find where to store your secrets. Due to the lack of choice, storing it in a default location -_-"
             <<std::endl;
         std::ofstream outfile(config_path);
         
         std::string data_path;
         if(!outfile.is_open()){
-            throw std::runtime_error("jrnl: And.... yeah, your journals config file coudn't be opened at "+config_path);
+            throw std::runtime_error("And.... yeah, your journals config file coudn't be opened at "+config_path);
         }
         if(xdg_data == NULL){
             data_path=std::string(home)+"/.local/share/jrnl/journal.txt";

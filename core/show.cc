@@ -37,7 +37,7 @@ void manager::show(std::string range){
         if(range[0] == '*'){
             int num = std::stoi(range.substr(1,range.size()));
             if(num > jrnl_manager.size() || num < 0){
-                throw std::runtime_error("jrnl: Yeah mate, you can't expect me to show beyond what's present in your jrnl -_-, whatever... range-error");
+                throw std::runtime_error("Yeah mate, you can't expect me to show beyond what's present in your jrnl -_-, whatever... range-error");
             }
             else{
                 start = 0;
@@ -47,7 +47,7 @@ void manager::show(std::string range){
         else if(range[range.length()-1] =='*'){
             int num = std::stoi(range.substr(0,range.size()-1));
             if( num > jrnl_manager.size() || num < 0){
-                throw std::runtime_error("jrnl: I can't show journal entires you haven't created yourself. whatever... range-error");
+                throw std::runtime_error("I can't show journal entires you haven't created yourself. whatever... range-error");
             }
             else{
                 start=jrnl_manager.size()-num;
