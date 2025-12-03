@@ -1,6 +1,6 @@
 #include <jrnlmanager.h>
 
-manager::manager(std::string PATH){
+Manager::Manager(std::string PATH){
     
     std::ifstream file(PATH);
     //checking if file is open
@@ -56,7 +56,7 @@ manager::manager(std::string PATH){
     }
 }
 
-void manager::addentry(std::string txt,std::string tag){
+void Manager::add_entry(std::string txt,std::string tag){
     jrnl_manager.emplace_back(id_count+1,tag,timestamp(),txt);
     id_count++;
 }
@@ -92,7 +92,7 @@ bool write_all(int fd, std::vector<jrnl>& jrnl_manager){
     return true;
 
 }
-void manager::save(std::string PATH){
+void Manager::save(std::string PATH){
     
     bool write_ok;
     //Using POSIX functions to implement atomic saves. 

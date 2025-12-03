@@ -11,7 +11,8 @@ int lastid_digits(int num){
 }
 
 
-void manager::show(std::string range){
+
+void Manager::show(const ShowFlag& flags){
 
     int start, end;
     //manual parsing logic to set start and end based upon the request
@@ -61,16 +62,16 @@ void manager::show(std::string range){
     }else{
         width = lastid_digits(jrnl_manager.back().getid());
     }
-
-    for(int i=start;i<end;i++){
+        
+    for(int i = start; i < end; i++){
+            
         //each iteration of loop loads the corresponding jrnl_manager element into a temporary variable for display
-        int id=jrnl_manager[i].getid();
-        std::string tag=jrnl_manager[i].gettag();
-        time_t timestamp=jrnl_manager[i].getstamp();
-        std::string txt=jrnl_manager[i].getentry();
+        int id = jrnl_manager[i].getid();
+        std::string tag = jrnl_manager[i].gettag();    
+        time_t timestamp = jrnl_manager[i].getstamp();
+        std::string txt = jrnl_manager[i].getentry();
         //Printing each entry with formatting
         std::cout<<GREEN<<std::setw(width)<<std::setfill('0')<<id<<RESET<<" ";
         std::cout<<tag<<" "<<GREEN<<timeconvert(timestamp)<<RESET<<" "<<txt<<"\n";
-    }
-
+        }
 }

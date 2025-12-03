@@ -13,6 +13,7 @@
 #include <cstring>
 #include <filesystem>
 #include <iomanip>
+#include <optional>
 
 #ifndef JRNLMANAGER_H
 #define JRNLMANAGER_H
@@ -27,17 +28,35 @@
 #define WHITE   "\x1b[37m"
 #define RESET   "\x1b[0m"
 
-class manager{
+enum class InputMode{
+    argv,
+    pipe,
+    std_in
+};
+
+
+//struct to store the flags specified for show method
+struct ShowFlag{
+    std::optional<std::string> range;
+    std::optional<bool> color;
+    std::optional<time_t> before;
+    std::optional<time_t> after;
+
+    InputMode mode;
+};
+
+
+class Manager{
 
     private: 
     std::vector<jrnl> jrnl_manager;
     int id_count;
 
     public:
-    manager(std::string PATH);
-    void addentry(std::string txt,std::string tag="jrnl");
+    Manager(std::string PATH);
+    void add_entry(std::string txt,std::string tag="jrnl");
     void save(std::string PATH);
-    void show(std::string range);
+    void show(const ShowFlag& flags);
     void backup(std::string PATH);
     int getid_count(){return id_count;}
 };
