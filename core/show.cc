@@ -72,7 +72,7 @@ void Manager::show(const ShowFlag& flags){
             }
         }
     }
-
+    
     //jrnl_manager id width acquisition
     int width;
     if(jrnl_manager.empty()){
@@ -88,7 +88,7 @@ void Manager::show(const ShowFlag& flags){
                 time_t timestamp = jrnl_manager[i].getstamp();
                 std::string txt = jrnl_manager[i].getentry();            
             //Printing each entry with formatting
-                std::cout<<GREEN<<std::setw(width)<<std::setfill('0')<<id<<RESET<<" ";
-                std::cout<<tag<<" "<<GREEN<<timeconvert(timestamp)<<RESET<<" "<<txt<<"\n";
+                std::cout<<std::setw(width)<<std::setfill('0')<<id<<" ";
+                std::cout<<tag<<" "<<timeconvert(timestamp)<<" "<<txt<<"\n";
     }
 }
