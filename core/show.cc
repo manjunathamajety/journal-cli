@@ -77,10 +77,10 @@ void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
     std::string reset = "\x1b[0m";
     if(flags.color){
     
-        id_color   = std::string("\x1b[") + colors.id_color.substr(0,1) + "m";
-        tag_color  = std::string("\x1b[") + colors.tag_color.substr(0,1) + "m";
-        time_color = std::string("\x1b[") + colors.timestamp_color.substr(0,1) + "m";
-        text_color = std::string("\x1b[") + colors.text_color.substr(0,1) + "m";
+        id_color   = std::string("\x1b[") + colors.id_color + "m";
+        tag_color  = std::string("\x1b[") + colors.tag_color + "m";
+        time_color = std::string("\x1b[") + colors.timestamp_color + "m";
+        text_color = std::string("\x1b[") + colors.text_color + "m";
     }
     else{
         id_color = "";
@@ -97,6 +97,7 @@ void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
     else{
         width = lastid_digits(jrnl_manager.back().getid());
     }
+    
     for(int i = start; i < end; i++){
             //each iteration of loop loads the corresponding jrnl_manager element into a temporary variable for display
                 int id = jrnl_manager[i].getid();
