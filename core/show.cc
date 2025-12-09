@@ -73,7 +73,22 @@ void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
             }
         }
     }
+    std::string id_color,tag_color,time_color,text_color;
+    std::string reset = "\x1b[0m";
+    if(flags.color){
     
+        id_color   = std::string("\x1b[") + colors.id_color.substr(0,1) + "m";
+        tag_color  = std::string("\x1b[") + colors.tag_color.substr(0,1) + "m";
+        time_color = std::string("\x1b[") + colors.timestamp_color.substr(0,1) + "m";
+        text_color = std::string("\x1b[") + colors.text_color.substr(0,1) + "m";
+    }
+    else{
+        id_color = "";
+        tag_color = "";
+        time_color = "";
+        text_color = "";
+    }
+
     //jrnl_manager id width acquisition
     int width;
     if(jrnl_manager.empty()){
@@ -89,7 +104,7 @@ void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
                 time_t timestamp = jrnl_manager[i].getstamp();
                 std::string txt = jrnl_manager[i].getentry();            
             //Printing each entry with formatting
-                std::cout<<std::setw(width)<<std::setfill('0')<<id<<" ";
-                std::cout<<tag<<" "<<timeconvert(timestamp)<<" "<<txt<<"\n";
+                std::cout<<id_color<<std::setw(width)<<std::setfill('0')<<id<<reset<<" ";
+                std::cout<<tag_color<<tag<<reset<<" "<<time_color<<timeconvert(timestamp)<<reset<<" "<<text_color<<txt<<reset<<"\n";
     }
 }

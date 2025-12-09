@@ -112,16 +112,16 @@ const ColorTemplate& config::parseconfig(){
         else if(key == "BACKUP_PATH"){
             BACKUP_PATH = value;
         }
-        else if(key == "id_color"){
+        else if(key == "Id"){
             colors.id_color = value;
         }
-        else if(key == "tag_color"){
+        else if(key == "Tag"){
             colors.tag_color = value;
         }
-        else if(key == "timestamp_color"){
+        else if(key == "Time"){
             colors.timestamp_color = value;
         }
-        else if(key == "Text_color"){
+        else if(key == "Text"){
             colors.text_color = value;
         }
     }
