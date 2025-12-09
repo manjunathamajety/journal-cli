@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <optional>
 #include <algorithm>
+#include <config.h>
 
 #ifndef JRNLMANAGER_H
 #define JRNLMANAGER_H
@@ -57,7 +58,7 @@ class Manager{
     Manager(std::string PATH);
     void addentry(std::string txt,std::string tag="jrnl");
     void save(std::string PATH);
-    void show(const ShowFlag& flags);
+    void show(const ShowFlag& flags,const ColorTemplate& colors);
     void backup(std::string PATH);
     int getid_count(){return id_count;}
 };

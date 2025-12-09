@@ -1,6 +1,7 @@
 #include <config.h>
 
-static void check_create_parent_dir(const std::string path){
+//helper to create parent_directories
+static void check_create_parent_dir(const std::string& path){
     std::filesystem::path parent_dir = std::filesystem::path(path).parent_path();
     if(!std::filesystem::exists(parent_dir)){
         std::cout<<"Creating parent directory at: "<<parent_dir<<std::endl;
@@ -8,89 +9,14 @@ static void check_create_parent_dir(const std::string path){
     }
 }
 
-static void check_create_file(const std::string path){
-    std::ofstream out(path);
+//helper to create files
+static void check_create_file(const std::string& path){
+    std::ofstream out(path,std::ios::app);
     if(!out){
-        throw std::runtime_error("Couldn't create file at" + " "+ path);
+        throw std::runtime_error(std::string("Couldn't create file at ") + path);
     }
 }
 
-void config::read_config_file(std::string config_path){
-    //reading the config file
-    std::string line;
-    std::ifstream file(config_path); 
-    std::unordered_map<std::string, std::string> config_parse;
-    while(std::getline(file,line)){
-        if(line.empty() || line[0] == '#'){
-            //do nothing
-            continue;
-        }
-        
-        auto eq = line.find('$');
-        if (eq == std::string::npos){
-            //do nothing
-            continue;
-        }
-        std::string key = line.substr(0,eq);
-        std::string value = line.substr(eq+1);
-        config_parse[key] = value;
-    }
-    
-    //assinging the values in class, from the unordered map
-    struct ColorConfig colors; 
-    for(const auto& [key,value] : config_parse){
-        if(key == "PATH"){
-            this->PATH = value;
-        }
-        else if(key == "BACKUP_PATH"){
-            this->BACKUP_PATH = value;
-        }
-        else if(key == "id_color"){
-            colors.id_color = value;
-        }
-        else if(key == "tag_color"){
-            colors.tag_color = value;
-        }
-        else if(key == "timestamp_color"){
-            colors.timestamp_color = value;
-        }
-        else if(key == "Text_color"){
-            colors.text_color = value;
-        }
-    }
-}
-
-
-void create_default_config(std::string config_path, const char* xdg_data){
-    //creating the file with default values, since it doesn't exist
-        std::cout<<"Your journal couldn't find where to store your secrets. Due to the lack of choice, storing it in a default location -_-"
-            <<std::endl;
-        std::ofstream outfile(config_path);
-        
-        std::string data_path;
-        if(!outfile.is_open()){
-            throw std::runtime_error("And.... yeah, your journals config file coudn't be opened at "+std::string(config_path));
-        }
-        if(xdg_data == NULL){
-            data_path=std::string(gethome())+"/.local/share/jrnl/journal.txt";
-        }
-        else{
-            data_path=std::string(xdg_data)+"/jrnl/journal.txt";
-        }
-        outfile<<"#Default path for storing journal.txt file"<<std::endl;
-        outfile<<"PATH$"+data_path<<std::endl;
-
-        std::string backup_path;
-        if(xdg_data == NULL){
-            backup_path = std::string(gethome())+"/.local/share/jrnl/backup";
-        }
-        else{
-            backup_path = std::string(xdg_data)+"/jrnl/backup";
-        }
-        outfile<<"#Default directory path for storing backups"<<std::endl;
-        outfile<<"BACKUP_PATH$" + backup_path<<std::endl;
-}
-//constructor initalizing the variables with default paths
 config::config(){
     //getting the default environments
     const char* home = std::getenv("HOME");
@@ -112,7 +38,6 @@ config::config(){
     }
     //chekcing for if the directories exist and creating the file if it doesn't exist
     check_create_parent_dir(config_path);
-    check_create_file(config_path);
 
     if(xdg_data == nullptr && home == nullptr){
         //bailing out since there's no damned xdg_data_home and home
@@ -129,9 +54,77 @@ config::config(){
         BACKUP_PATH = std::string(home)+"/.local/share/jrnl/backup";
     }
     check_create_parent_dir(PATH);
-    check_create_parent_dir(BACKUP_PATH);
+    check_create_parent_dir(BACKUP_PATH+"/dummy.txt");
     check_create_file(PATH);
 }
 
 //method to check 
+void config::initialization(){
+    if (!std::filesystem::exists(config_path)){
+        std::ofstream outfile(config_path);
+        if(!outfile){
+            throw std::runtime_error(std::string("Coudn't create file at location ") + config_path);
+        }
+        else{
+            outfile<<"#Default location to store journal.txt"<<"\n";
+            outfile<<"PATH$"<<PATH<<"\n";
+            outfile<<"#Default location to store backups"<<"\n";
+            outfile<<"BACKUP_PATH$"<<BACKUP_PATH<<"\n";
+            outfile<<"#Color Configs[256bit ANSI Color Codes]"<<"\n";
+            outfile<<"Id$"<<"32"<<"\n";
+            outfile<<"Tag$"<<"34"<<"\n";
+            outfile<<"Time$"<<"32"<<"\n";
+            outfile<<"Text$"<<"37"<<"\n";
+            outfile.close();
+        }
+    }
+}
 
+
+const ColorTemplate& config::parseconfig(){
+    
+    //reading the config file
+    std::string line;
+    std::ifstream file(config_path); 
+    std::unordered_map<std::string, std::string> config_parse;
+    while(std::getline(file,line)){
+        if(line.empty() || line[0] == '#'){
+            //do nothing
+            continue;
+        }
+        
+        auto eq = line.find('$');
+        //when the search has failed
+        if (eq == std::string::npos){
+            //do nothing
+            continue;
+        }
+        std::string key = line.substr(0,eq);
+        std::string value = line.substr(eq+1);
+        config_parse[key] = value;
+    }
+    
+    //assinging the values in class, from the unordered map
+    for(const auto& [key,value] : config_parse){
+        if(key == "PATH"){
+            PATH = value;
+        }
+        else if(key == "BACKUP_PATH"){
+            BACKUP_PATH = value;
+        }
+        else if(key == "id_color"){
+            colors.id_color = value;
+        }
+        else if(key == "tag_color"){
+            colors.tag_color = value;
+        }
+        else if(key == "timestamp_color"){
+            colors.timestamp_color = value;
+        }
+        else if(key == "Text_color"){
+            colors.text_color = value;
+        }
+    }
+
+    return colors;
+}

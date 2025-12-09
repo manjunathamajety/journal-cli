@@ -1,6 +1,7 @@
 #include <parse.h>
 #include <time.h>
 #include <jrnlmanager.h>
+#include <config.h>
 
 int add_handle(int argc, char** argv){
     //reading the config file for path
@@ -58,6 +59,8 @@ int display_handle(int argc, char** argv){
     //reading the config file for path
     config c1;
     std::string PATH=c1.getpath();
+    c1.initialization();
+    const ColorTemplate& colors = c1.parseconfig();
     //initializing the vector of journal entries 
     Manager m1(PATH);
     std::string display_specifier;
@@ -115,6 +118,6 @@ int display_handle(int argc, char** argv){
         flags.mode = InputMode::std_in;
     }
     
-    m1.show(flags);
+    m1.show(flags, colors);
     return 0;
 }

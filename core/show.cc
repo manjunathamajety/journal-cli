@@ -1,4 +1,5 @@
 #include <jrnlmanager.h>
+#include <config.h>
 
 int lastid_digits(int num){
     if (num == 0){return 1;}
@@ -10,7 +11,7 @@ int lastid_digits(int num){
     return count;
 }
 
-void Manager::show(const ShowFlag& flags){
+void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
     size_t start = 0, end = jrnl_manager.size();
     //filter for after flag
     if(flags.after){

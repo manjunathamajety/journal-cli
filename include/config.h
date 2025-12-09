@@ -22,15 +22,14 @@ class config{
         std::string config_path;
         std::string PATH;
         std::string BACKUP_PATH;
-        struct ColorTemplate colors;
+        ColorTemplate colors;
 
     public:
         config();
-        std::string getconfigpath(return config_path;)
         std::string getpath(){return PATH;}
         std::string getbackup(){return BACKUP_PATH;} 
         void initialization();
-        const ColorTemplate& getcolors();
+        const ColorTemplate& parseconfig();
 };
 
 #endif 
