@@ -29,7 +29,8 @@ class config{
         std::string getpath(){return PATH;}
         std::string getbackup(){return BACKUP_PATH;} 
         void initialization();
-        const ColorTemplate& parseconfig();
+        void parseconfig();
+        const ColorTemplate& getcolors(){return colors;}
 };
 
 #endif 

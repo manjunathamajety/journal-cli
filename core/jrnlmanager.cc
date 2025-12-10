@@ -11,6 +11,7 @@ Manager::Manager(std::string PATH){
     }
     //Initializes jrnl-objects in the jrnl_manager vector.
     int line_no=0;
+    size_t tagsize=0;
     std::string id,tag,stamp,txt;
     //while loops checks for if the entry can be compleltely scanned
     while (
@@ -19,13 +20,16 @@ Manager::Manager(std::string PATH){
         std::getline(file,stamp,';')&&
         std::getline(file,txt)){
         ++line_no;
+        if(tag.length() > tagsize){
+            tagsize = tag.length();
+        }
         if(id.empty() || tag.empty() || stamp.empty() || txt.empty()){
             std::cerr<<"Corrupted entry: "<<PATH<<":"<<line_no<<": skipping this entry \n";
             continue;
         }
         
         try{
-            int entry_id=std::stoi(id);
+            size_t entry_id=std::stoi(id);
             long long times=std::stoll(stamp);
 
             if(entry_id <= 0 || times <= 0){
@@ -46,6 +50,7 @@ Manager::Manager(std::string PATH){
         }
         
     }
+    tag_size = tagsize;
     file.close();
     
     if(jrnl_manager.empty()){

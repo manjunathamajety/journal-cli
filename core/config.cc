@@ -81,7 +81,7 @@ void config::initialization(){
 }
 
 
-const ColorTemplate& config::parseconfig(){
+void config::parseconfig(){
     
     //reading the config file
     std::string line;
@@ -126,5 +126,4 @@ const ColorTemplate& config::parseconfig(){
         }
     }
 
-    return colors;
 }

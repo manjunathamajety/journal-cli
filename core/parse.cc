@@ -6,7 +6,9 @@
 int add_handle(int argc, char** argv){
     //reading the config file for path
     config c1;
-    std::string PATH=c1.getpath();
+    c1.initialization();
+    c1.parseconfig();
+    std::string PATH = c1.getpath();
     //initializing the vector for jrnl entries
     Manager m1(PATH);
 
@@ -59,7 +61,8 @@ int display_handle(int argc, char** argv){
     //reading the config file for path
     config c1;
     c1.initialization();
-    const ColorTemplate& colors = c1.parseconfig(); 
+    c1.parseconfig();
+    const ColorTemplate& colors = c1.getcolors(); 
     std::string PATH=c1.getpath();
     //initializing the vector of journal entries 
     Manager m1(PATH);

@@ -1,9 +1,9 @@
 #include <jrnlmanager.h>
 #include <config.h>
 
-int lastid_digits(int num){
+size_t lastid_digits(size_t num){
     if (num == 0){return 1;}
-    int count = 0;
+    size_t count = 0;
     while(num){
         num /= 10;
         count++;
@@ -90,7 +90,7 @@ void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
     }
 
     //jrnl_manager id width acquisition
-    int width;
+    size_t width;
     if(jrnl_manager.empty()){
         width = 1;
     }
@@ -100,12 +100,13 @@ void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
     
     for(int i = start; i < end; i++){
             //each iteration of loop loads the corresponding jrnl_manager element into a temporary variable for display
-                int id = jrnl_manager[i].getid();
+                size_t id = jrnl_manager[i].getid();
                 std::string tag = jrnl_manager[i].gettag();    
                 time_t timestamp = jrnl_manager[i].getstamp();
                 std::string txt = jrnl_manager[i].getentry();            
             //Printing each entry with formatting
                 std::cout<<id_color<<std::setw(width)<<std::setfill('0')<<id<<reset<<" ";
-                std::cout<<tag_color<<tag<<reset<<" "<<time_color<<timeconvert(timestamp)<<reset<<" "<<text_color<<txt<<reset<<"\n";
+                std::cout<<tag_color<<std::left<<std::setw(tag_size)<<std::setfill(' ')<<tag<<reset<<" ";
+                std::cout<<time_color<<timeconvert(timestamp)<<reset<<" "<<text_color<<txt<<reset<<"\n";
     }
 }

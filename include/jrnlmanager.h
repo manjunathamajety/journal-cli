@@ -52,7 +52,8 @@ class Manager{
 
     private: 
     std::vector<jrnl> jrnl_manager;
-    int id_count;
+    size_t id_count;
+    size_t tag_size;
 
     public:
     Manager(std::string PATH);
