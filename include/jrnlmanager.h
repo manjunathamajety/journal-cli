@@ -20,21 +20,12 @@
 #ifndef JRNLMANAGER_H
 #define JRNLMANAGER_H
 
-enum class InputMode{
-    argv,
-    pipe,
-    std_in
-};
-
-
 //struct to store the flags specified for show method
 struct ShowFlag{
     std::optional<std::string> range;
     std::optional<bool> color;
     std::optional<time_t> before;
     std::optional<time_t> after;
-
-    InputMode mode;
 };
 
 

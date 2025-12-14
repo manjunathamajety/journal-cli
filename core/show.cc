@@ -26,7 +26,7 @@ void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
     if(flags.before){
         //before just affects the end variable 
         auto& vec = jrnl_manager;
-        auto it = std::upper_bound(vec.begin(), vec.end(), flags.before.value(), [](time_t bfr, jrnl& j){return j.getstamp() > bfr;});
+        auto it = std::upper_bound(vec.begin(), vec.end(), flags.before.value(), [](time_t bfr, jrnl& j){return bfr < j.getstamp();});
         size_t beforeid = it - vec.begin();
             end = std::min(end, beforeid);
     }
@@ -39,7 +39,7 @@ void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
         if(st == "*"){
             //do nothing :)
         }
-        else if(st[0] != '*' || st[st.length()-1] != '*'){
+        else if(st[0] != '*' && st[st.length()-1] != '*'){
             int num;
             num = std::stoi(st);
             if(num > jrnl_manager.size() || num <= 0){
@@ -98,7 +98,7 @@ void Manager::show(const ShowFlag& flags, const ColorTemplate& colors){
         width = lastid_digits(jrnl_manager.back().getid());
     }
     
-    for(int i = start; i < end; i++){
+    for(size_t i = start; i < end; i++){
             //each iteration of loop loads the corresponding jrnl_manager element into a temporary variable for display
                 size_t id = jrnl_manager[i].getid();
                 std::string tag = jrnl_manager[i].gettag();    

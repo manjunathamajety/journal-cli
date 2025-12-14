@@ -74,13 +74,8 @@ int display_handle(int argc, char** argv){
 
     if (argc == 0){
         flags.range = "*";
-        //flags.mode = !isatty(STDIN_FILENO);
-        if(isatty(STDIN_FILENO)){
-            flags.mode = InputMode::std_in;
-        }
     } 
     else {
-        flags.mode = InputMode::argv;
         for(int i = 0; i < argc; i++){
             std::string arg = argv[i];
             //checking if any of the flags match with the argv vector
@@ -116,12 +111,6 @@ int display_handle(int argc, char** argv){
                 }
             }
         }
-    }
-    if(!isatty(STDIN_FILENO)){
-        flags.mode = InputMode::pipe;
-    }
-    else {
-        flags.mode = InputMode::std_in;
     }
     
     m1.show(flags, colors);
