@@ -81,15 +81,24 @@ int display_handle(int argc, char** argv){
             //checking if any of the flags match with the argv vector
             //--before flag
             if(arg == "--before"){
-                std::string time = argv[i+1];
-                flags.before = time_parse(time); 
-                i++;
+                if(i+1 >= argc){
+                    throw std::runtime_error("Unspecified time range; usage - jrnl --before YYYY-MM-DD HH:MM");                }
+                else{
+                    std::string time = argv[i+1];
+                    flags.before = time_parse(time);
+                    i++;
+                }
             }
             //--after flag
             else if(arg == "--after"){
-                std::string time = argv[i+1];
-                flags.after = time_parse(time);
-                i++;
+                if(i+1 >= argc){
+                    throw std::runtime_error("Unspecified time range; usage - jrnl --before YYYY-MM-DD HH:MM");
+                }
+                else{
+                    std::string time = argv[i+1];
+                    flags.after = time_parse(time);
+                    i++;
+                } 
             }
             //--color flag -> to force color in show fuction
             else if(arg == "--color"){
