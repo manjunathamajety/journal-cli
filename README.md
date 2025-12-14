@@ -34,14 +34,15 @@ jrnl show 5* #displays last 5 entries
 jrnl show --after "2025-01-01 10:00"
 jrnl show --before "2025-01-10 18:30"
 jrnl show --after "2025-01-10 00:00" --before "2025-02-10 00:00"
-
+```
 Both range based and time based filters can be composed with one another. 
-
+```sh
 jrnl show --after "2025-01-01 10:00" "*5"
 jrnl show --after "2025-01-01 10:00" "5*"
 
 jrnl show --before "2025-01-10 18:30" "*9"
 jrnl show --before "2025-01-10 18:30" "9*"
+```
 
 ## Storage Format
 
@@ -49,7 +50,7 @@ Journal entries are stored as one entry per line in a plain-text file:
 
 ```sh
 id;tag;timestamp;text
-
+```
 - `id`        : Auto-generated numeric identifier
 - `tag`       : User-provided label (defaults to `jrnl`)
 - `timestamp` : Unix timestamp (`time_t`)
@@ -75,13 +76,14 @@ The configuration file allows customization of:
 - ANSI color codes (256-color) for output
 
 Example configuration:
-
+```sh
 PATH$/home/user/.local/share/jrnl/journal.txt
 BACKUP_PATH$/home/user/.local/share/jrnl/backup
 Id$32
 Tag$34
 Time$32
 Text$37
+```
 
 Lines starting with `#` are treated as comments.
 
@@ -105,11 +107,11 @@ mkdir build
 cd build
 cmake ..
 make
-
+```
 To install the binary to your system 
 ```sh
 sudo make install
-
+```
 
 ## Design Notes
 
