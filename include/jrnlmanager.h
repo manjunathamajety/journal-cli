@@ -42,8 +42,9 @@ class Manager{
     void addentry(std::string txt,std::string tag="jrnl");
     void save(std::string PATH);
     void show(const ShowFlag& flags,const ColorTemplate& colors);
-    void backup(std::string PATH);
+    void backup(std::string backup_path);
     int getid_count(){return id_count;}
+
 
 };
 

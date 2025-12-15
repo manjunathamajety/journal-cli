@@ -33,7 +33,10 @@ Manager::Manager(std::string PATH, std::string BACKUP_PATH){
         throw std::runtime_error("Aborted");
     }
     
-    bool backup_check = check_dir(BACKUP_PATH);
+    bool backup_check = check_dir(BACKUP_PATH+"/dummy.txt");
+    if(backup_check == false){
+        throw std::runtime_error("Aborted");
+    }
 }
 
 void Manager::loadentry(std::string PATH){    
@@ -103,7 +106,7 @@ void Manager::addentry(std::string txt,std::string tag){
 }
 
 //passing jrnl_manager by reference 'const &'
-bool write_all(int fd, std::vector<jrnl>& jrnl_manager){
+static bool write_all(int fd, std::vector<jrnl>& jrnl_manager){
     for(int i=0; i<jrnl_manager.size();i++){
         jrnl& entry=jrnl_manager[i]; 
         std::string entry_string=std::to_string(entry.getid())+";"+entry.gettag()+";"+std::to_string(entry.getstamp())+";"+entry.getentry()+"\n";

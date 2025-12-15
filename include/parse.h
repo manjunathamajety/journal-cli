@@ -12,4 +12,7 @@
 int add_handle(int argc,char** argv);
 
 int display_handle(int argc,char** argv);
+
+int backup_handle(int argc, char** argv);
+
 #endif

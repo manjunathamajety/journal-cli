@@ -125,3 +125,34 @@ int display_handle(int argc, char** argv){
     m1.show(flags, colors);
     return 0;
 }
+
+int backup_handle(int argc, char** argv){
+    //reading the config file for path
+    config c1;
+    c1.initialization();
+    c1.parseconfig();
+    std::string PATH = c1.get_path();
+    std::string BACKUP_PATH = c1.get_backup();
+    //initializing the vector for jrnl entries
+    Manager m1(PATH,BACKUP_PATH);
+    m1.loadentry(PATH);
+
+    if(argc == 1){
+        std::string name = argv[0]; 
+        BACKUP_PATH = BACKUP_PATH+"/"+name+".txt";
+        m1.backup(BACKUP_PATH);
+        return 0;
+    }
+    else if(argc == 0){
+        time_t time_now = timestamp();
+        std::string time = timeconvert(time_now);
+        BACKUP_PATH = BACKUP_PATH+"/backup"+time+".txt";
+        m1.backup(BACKUP_PATH);
+        return 0;
+    }
+    else{
+        throw std::runtime_error("backup - too many arguments");
+    }
+
+
+}

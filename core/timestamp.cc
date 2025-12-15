@@ -29,6 +29,8 @@ std::time_t time_parse(std::string input_string){
 std::string timeconvert(time_t timestamp){
     std::tm* localtime=std::localtime(&timestamp);
     std::ostringstream oss;
-    oss<<std::put_time(localtime, "%Y-%m-%d %H:%M");
+    oss<<std::put_time(localtime, "%Y-%m-%d@%H:%M");
     return oss.str();
 }
+
+
