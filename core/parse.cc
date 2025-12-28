@@ -3,7 +3,14 @@
 #include <jrnlmanager.h>
 #include <config.h>
 
-int add_handle(int argc, char** argv){
+void init_handle(int argc, char** argv){
+    
+
+
+
+}
+
+void add_handle(int argc, char** argv){
     //reading the config file for path
     config c1;
     c1.initialization();
@@ -22,14 +29,12 @@ int add_handle(int argc, char** argv){
             std::getline(std::cin,entry);
             m1.addentry(entry);
             m1.save(PATH);
-            return 0;
         }
         //input being piped
         else{
             std::getline(std::cin,entry);
             m1.addentry(entry);
             m1.save(PATH);
-            return 0;
         }
     }
     //getting input from argv itself
@@ -39,7 +44,6 @@ int add_handle(int argc, char** argv){
             entry=argv[0];
             m1.addentry(entry);
             m1.save(PATH);
-            return 0;
         }
         //tag is explicitly specified
         else if(argc==2){
@@ -47,15 +51,12 @@ int add_handle(int argc, char** argv){
             tag=argv[1];
             m1.addentry(entry,tag);
             m1.save(PATH);
-            return 0;
         }
         else {
-            std::cerr<<"jrnl: too many arguments to 'add'\n"
-                <<"Usage: jrnl add [entry] tag [tag-optional]\n";
-            return 1;
+            throw std::runtime_error("jrnl: too many arguments to 'add'\n Usage: jrnl add [entry] tag [tag-optional]\n");
         }
     }
-    return 1;
+    throw std::runtime_error("jrnl: add - invalid use");
 }
 
 int display_handle(int argc, char** argv){
@@ -82,7 +83,8 @@ int display_handle(int argc, char** argv){
             //--before flag
             if(arg == "--before"){
                 if(i+1 >= argc){
-                    throw std::runtime_error("Unspecified time range; usage - jrnl --before YYYY-MM-DD HH:MM");                }
+                    throw std::runtime_error("Unspecified time range; usage - jrnl --before YYYY-MM-DD HH:MM");
+                }
                 else{
                     std::string time = argv[i+1];
                     flags.before = time_parse(time);
@@ -112,8 +114,7 @@ int display_handle(int argc, char** argv){
             //so range SHOULD be the only term accepted which doesn't start with '--'
             else if(arg.size() < 2 || arg[0] != '-' || arg[1] != '-'){
                 if(flags.range){
-                    std::cerr<<"jrnl: too many arguments for range \n";
-                    return 1;
+                    throw std::runtime_error("jrnl: too many arguments for range \n");
                 }
                 else{
                     flags.range = argv[i];
@@ -123,7 +124,6 @@ int display_handle(int argc, char** argv){
     }
     
     m1.show(flags, colors);
-    return 0;
 }
 
 int backup_handle(int argc, char** argv){
@@ -141,14 +141,12 @@ int backup_handle(int argc, char** argv){
         std::string name = argv[0]; 
         BACKUP_PATH = BACKUP_PATH+"/"+name+".txt";
         m1.backup(BACKUP_PATH);
-        return 0;
     }
     else if(argc == 0){
         time_t time_now = timestamp();
         std::string time = timeconvert(time_now);
         BACKUP_PATH = BACKUP_PATH+"/backup"+time+".txt";
         m1.backup(BACKUP_PATH);
-        return 0;
     }
     else{
         throw std::runtime_error("backup - too many arguments");

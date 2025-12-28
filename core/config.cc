@@ -176,9 +176,14 @@ void config::resolve_local_or_global(bool is_local){
         std::string local_jrnl_test = std::string(cwd)+"/.jrnlc/jrnl.txt";
         std::string local_backup_test = std::string(cwd)+"/.jrnlc/backup";
 
-        local_path = local_jrnl_test;
-        local_backup = local_backup_test;
-        if(!std::filesystem::exists(local_path))
+        if(!std::filesystem::exists(local_jrnl_test)){
+            throw std::runtime_error("Local journal not initialized");
+            std::cout<<"Run \n jrnlc init --local \n to initialize local journal"<<std::endl;
+        }
+        else{
+            local_path = local_jrnl_test;
+            local_backup = local_backup_test;
+        }
     }
     else{
         //do nothing i.e don't set the local_path variable
