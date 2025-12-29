@@ -30,65 +30,86 @@ void init_handle(int argc, char** argv){
 
 void add_handle(int argc, char** argv){
     //reading the config file for path
+    bool is_local = true;
     config c1;
     c1.parseconfig();
+    std::string entry;
+    std::string tag_buf;
+    std::optional<std::string> tag;
+    bool got_entry = false;
+    if (argc == 0){
+        std::string entry;
+        std::getline(std::cin, entry);
+        c1.resolve_local_or_global(is_local);
+        std::string PATH = c1.get_path();
+        std::string BACKUP_PATH = c1.get_backup();
+        Manager m1(PATH,BACKUP_PATH);
+        m1.loadentry(PATH);
+        m1.addentry(entry);
+        m1.save(PATH);
+    } 
+    else {
+        for(int i = 0; i < argc; i++){
+            std::string arg = argv[i];
+            //checking if any of the flags match with the argv vector
+            if(arg == "--local"){
+                is_local = true;
+            }
+            else if(arg == "--global"){
+                is_local = false;
+            }
+            else if(arg == "--tag"){
+                if(i+1 >= argc){
+                    throw std::runtime_error("Unspecified tag: usage --tag [tag]");                }
+                else{
+                    tag_buf = argv[i+1];
+                    i++;
+                }
+            }
+            else {
+                if(got_entry){
+                    throw std::runtime_error("jrnlc: too many positional arguments for add \n Usage jrnlc add [entry] --tag [tag] [--local/--global]\n");
+                }
+                else{
+                    entry = arg;
+                    got_entry = true;
+                }
+            }
+        }
+    }
+
+    if(!got_entry){
+        if(!std::getline(std::cin,entry) || entry.empty()){
+            throw std::runtime_error("jrnlc: no entry provided");
+        }
+    }
+    c1.resolve_local_or_global(is_local);
     std::string PATH = c1.get_path();
     std::string BACKUP_PATH = c1.get_backup();
-    //initializing the vector for jrnl entries
     Manager m1(PATH,BACKUP_PATH);
     m1.loadentry(PATH);
-    std::string entry;
-    std::string tag;
-    //condition when there's no input in argv
-    if(argc == 0){
-        //input from stream
-        if(isatty(STDIN_FILENO)){
-            std::getline(std::cin,entry);
-            m1.addentry(entry);
-            m1.save(PATH);
-        }
-        //input being piped
-        else{
-            std::getline(std::cin,entry);
-            m1.addentry(entry);
-            m1.save(PATH);
-        }
+    if(tag_buf.empty()){
+        m1.addentry(entry);
     }
-    //getting input from argv itself
     else{
-        //tag is not specified
-        if(argc==1){
-            entry=argv[0];
-            m1.addentry(entry);
-            m1.save(PATH);
-        }
-        //tag is explicitly specified
-        else if(argc==2){
-            entry=argv[0];
-            tag=argv[1];
-            m1.addentry(entry,tag);
-            m1.save(PATH);
-        }
-        else {
-            throw std::runtime_error("jrnlc: too many arguments to 'add'\n Usage: jrnl add [entry] tag [tag-optional]\n");
-        }
+        m1.addentry(entry, tag_buf);
     }
-    throw std::runtime_error("jrnlc: add - invalid use");
+    m1.save(PATH);
 }
 
 void display_handle(int argc, char** argv){
     //reading the config file for path
     config c1;
     c1.parseconfig();
-    const ColorTemplate& colors = c1.get_colors(); 
-    std::string PATH = c1.get_path();
-    std::string BACKUP_PATH = c1.get_backup();
-    //initializing the vector of journal entries 
-    Manager m1(PATH, BACKUP_PATH);
-    m1.loadentry(PATH);
     std::string display_specifier;
     struct ShowFlag flags;
-
+    bool is_local = true;
+    if(!isatty(STDIN_FILENO)){
+        flags.color = false;
+    }
+    else{
+        flags.color = true;
+    }
     if (argc == 0){
         flags.range = "*";
     } 
@@ -126,6 +147,9 @@ void display_handle(int argc, char** argv){
             else if(arg == "--no-color"){
                 flags.color = false;
             }
+            else if(arg == "--global"){
+                is_local = false;
+            }
             //check for range, which doesn't follow the flag format
             //so range SHOULD be the only term accepted which doesn't start with '--'
             else if(arg.size() < 2 || arg[0] != '-' || arg[1] != '-'){
@@ -138,7 +162,13 @@ void display_handle(int argc, char** argv){
             }
         }
     }
-    
+    const ColorTemplate& colors = c1.get_colors(); 
+    c1.resolve_local_or_global(is_local);
+    std::string PATH = c1.get_path();
+    std::string BACKUP_PATH = c1.get_backup();
+    //initializing the vector of journal entries 
+    Manager m1(PATH, BACKUP_PATH);
+    m1.loadentry(PATH); 
     m1.show(flags, colors);
 }
 
@@ -151,17 +181,16 @@ void backup_handle(int argc, char** argv){
     //initializing the vector for jrnl entries
     Manager m1(PATH,BACKUP_PATH);
     m1.loadentry(PATH);
-
-    if(argc == 1){
-        std::string name = argv[0]; 
-        BACKUP_PATH = BACKUP_PATH+"/"+name+".txt";
-        m1.backup(BACKUP_PATH);
-    }
-    else if(argc == 0){
+    
+    if(argc == 0){
         time_t time_now = timestamp();
         std::string time = timeconvert(time_now);
         BACKUP_PATH = BACKUP_PATH+"/backup"+time+".txt";
         m1.backup(BACKUP_PATH);
+    }
+    else{
+        std::string arg
+
     }
     else{
         throw std::runtime_error("jrnlc: backup - too many arguments");

@@ -95,7 +95,7 @@ void config::global_init(){
             outfile<<"Time$"<<"32"<<"\n";
             outfile<<"Text$"<<"37"<<"\n";
             outfile.close();
-            std::cout<<"Global config created at path: "<<config_path<<std::endl;
+            std::cout<<"Global config created at path: "<<config_path<<"\n"<<std::endl;
         }
     }
 }
@@ -164,7 +164,7 @@ void config::local_init(){
         throw std::runtime_error("Mate, coudln't create local jrnl");
     }
     else{
-        std::cout<<"Local jrnl created at path: "<<local_jrnl_test;
+        std::cout<<"Local jrnl created at path: "<<local_jrnl_test<<"\n";
         local_path = local_jrnl_test;
         local_backup = local_backup_test;
     }
@@ -176,11 +176,7 @@ void config::resolve_local_or_global(bool is_local){
         std::string local_jrnl_test = std::string(cwd)+"/.jrnlc/jrnl.txt";
         std::string local_backup_test = std::string(cwd)+"/.jrnlc/backup";
 
-        if(!std::filesystem::exists(local_jrnl_test)){
-            throw std::runtime_error("Local journal not initialized");
-            std::cout<<"Run \n jrnlc init --local \n to initialize local journal"<<std::endl;
-        }
-        else{
+        if(std::filesystem::exists(local_jrnl_test)){
             local_path = local_jrnl_test;
             local_backup = local_backup_test;
         }
