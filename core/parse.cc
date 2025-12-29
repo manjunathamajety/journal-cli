@@ -104,12 +104,10 @@ void display_handle(int argc, char** argv){
     std::string display_specifier;
     struct ShowFlag flags;
     bool is_local = true;
-    if(!isatty(STDIN_FILENO)){
-        flags.color = false;
-    }
-    else{
-        flags.color = true;
-    }
+    //to find the machine state, tty or argv
+    bool tty = isatty(STDOUT_FILENO);
+    //buffer to find what the user preference is 
+    std::optional<bool> color_buf;
     if (argc == 0){
         flags.range = "*";
     } 
@@ -141,11 +139,11 @@ void display_handle(int argc, char** argv){
             }
             //--color flag -> to force color in show fuction
             else if(arg == "--color"){
-                flags.color = true;
+                color_buf = true;
             }
             //--no-color flag -> to force color-free output in show function
             else if(arg == "--no-color"){
-                flags.color = false;
+                color_buf = false;
             }
             else if(arg == "--global"){
                 is_local = false;
@@ -162,6 +160,14 @@ void display_handle(int argc, char** argv){
             }
         }
     }
+    //by default the user's preference is given the highest priority
+    if(color_buf.has_value()){
+        flags.color = color_buf;
+    }
+    //else using the machine state;
+    else{
+        flags.color = tty;
+    }
     const ColorTemplate& colors = c1.get_colors(); 
     c1.resolve_local_or_global(is_local);
     std::string PATH = c1.get_path();
@@ -173,28 +179,62 @@ void display_handle(int argc, char** argv){
 }
 
 void backup_handle(int argc, char** argv){
+    std::string backup_name;
     //reading the config file for path
     config c1;
     c1.parseconfig();
-    std::string PATH = c1.get_path();
-    std::string BACKUP_PATH = c1.get_backup();
-    //initializing the vector for jrnl entries
-    Manager m1(PATH,BACKUP_PATH);
-    m1.loadentry(PATH);
-    
+    bool is_local = true;
+    bool got_name = false;
     if(argc == 0){
+        c1.resolve_local_or_global(is_local);
+        std::string PATH = c1.get_path();
+        std::string BACKUP_PATH = c1.get_backup();
+        Manager m1(PATH,BACKUP_PATH);
+        m1.loadentry(PATH);
         time_t time_now = timestamp();
         std::string time = timeconvert(time_now);
         BACKUP_PATH = BACKUP_PATH+"/backup"+time+".txt";
         m1.backup(BACKUP_PATH);
     }
     else{
-        std::string arg
-
+        for(int i = 0; i < argc; i++){
+            std::string arg = argv[i];
+            if(arg == "--local"){
+                is_local = true;
+            }
+            else if(arg == "--global"){
+                is_local = false;
+            }
+            else{
+                if(got_name == false){
+                    backup_name = argv[i];
+                    got_name = true;
+                }
+                else{
+                    throw std::runtime_error("jrnlc: backup - too many positional arguments \n Usage jrnlc backup [name-optional] [--local/--global]\n");
+                }
+            }
+        }    
+    }
+    if(backup_name.empty()){
+        c1.resolve_local_or_global(is_local);
+        std::string PATH = c1.get_path();
+        std::string BACKUP_PATH = c1.get_backup();
+        Manager m1(PATH,BACKUP_PATH);
+        m1.loadentry(PATH);
+        time_t time_now = timestamp();
+        std::string time = timeconvert(time_now);
+        BACKUP_PATH = BACKUP_PATH+"/backup"+time+".txt";
+        m1.backup(BACKUP_PATH);
     }
     else{
-        throw std::runtime_error("jrnlc: backup - too many arguments");
+        c1.resolve_local_or_global(is_local);
+        std::string PATH = c1.get_path();
+        std::string BACKUP_PATH = c1.get_backup();
+        Manager m1(PATH,BACKUP_PATH);
+        m1.loadentry(PATH);
+        BACKUP_PATH = BACKUP_PATH+"/"+backup_name+".txt";
+        m1.backup(BACKUP_PATH);
     }
-
 
 }
