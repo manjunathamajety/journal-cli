@@ -93,15 +93,40 @@ void Manager::loadentry(std::string PATH){
     
     if(jrnl_manager.empty()){
         id_count=0;
+        last_tag = "";
     }
     else{
-        id_count=jrnl_manager.back().getid();
+        id_count = jrnl_manager.back().getid();
+        last_tag = jrnl_manager.back().gettag();
     }
 }
 
 
-void Manager::addentry(std::string txt,std::string tag){
-    jrnl_manager.emplace_back(id_count+1,tag,timestamp(),txt);
+void Manager::addentry(std::string txt,std::optional<std::string> tag){
+    std::string tag_value;
+    if(tag.has_value()){
+        if(tag->empty()){
+            std::cerr<<"Invalid tag specified";
+            if(last_tag.empty()){
+                tag_value = "jrnl";
+            }
+            else{
+                tag_value = last_tag;
+            }
+        }
+        else{
+            tag_value = *tag;
+        }
+    }
+    else{
+        if(last_tag.empty()){
+            tag_value = "jrnl";
+        }
+        else{
+            tag_value = last_tag;
+        }
+    }
+    jrnl_manager.emplace_back(id_count+1,tag_value,timestamp(),txt);
     id_count++;
 }
 

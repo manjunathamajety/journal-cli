@@ -15,12 +15,25 @@ and basic CLI design.
 - Add journal entries from command-line arguments or stdin
 - Optional tags for entries
 - Display entries using ranges
+- Uses the tag of the last entry for the new entry, unless a specific tag is passed
 - Filter entries by time (`--before`, `--after`)
 - Atomic file writes (write-to-temp + rename)
 - Plain-text, human-readable storage format
 - Config file to store journal path and color codes 
 - Optional ANSI colorized output (configurable)
 - Compatible with Unix tools like grep, less, echo etc.
+
+# ## Tag Continuation
+
+When adding entries, `jrnlc` supports implicit tag continuation:
+
+- If a tag is explicitly provided, it is used.
+- If no tag is provided, the tag from the **previous entry** is reused.
+- If no previous tag exists, entries default to the tag `jrnl`.
+- An explicitly empty tag is treated as invalid and falls back to the same behavior.
+
+This allows fast journaling without repeatedly retyping tags, while still allowing explicit overrides.
+
 # # Installation
 
 # ## Build from source

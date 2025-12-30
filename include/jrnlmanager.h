@@ -35,11 +35,12 @@ class Manager{
     std::vector<jrnl> jrnl_manager;
     size_t id_count;
     size_t tag_size;
+    std::string last_tag; 
 
     public:
     Manager(std::string PATH, std::string BACKUP_PATH);
     void loadentry(std::string PATH);
-    void addentry(std::string txt,std::string tag="jrnl");
+    void addentry(std::string txt,std::optional<std::string> tag = std::nullopt);
     void save(std::string PATH);
     void show(const ShowFlag& flags,const ColorTemplate& colors);
     void backup(std::string backup_path);
