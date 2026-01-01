@@ -23,6 +23,7 @@ void init_handle(int argc, char** argv){
         }
         else if(flag == "--help"){
             init_help();
+            return;
         }
         else{
             throw std::runtime_error("init - invalid flag \n Usage jrnlc init [--global/--local] \n Use jrncl init --help \n");
@@ -59,6 +60,7 @@ void add_handle(int argc, char** argv){
             if(arg == "--help"){
                 if(i == 0){
                     add_help();
+                    return;
                 }
                 else{
                     throw std::runtime_error("add - invalid usage of --help \n Usage jrnlc add --help \n");
@@ -132,6 +134,7 @@ void show_handle(int argc, char** argv){
             if(arg == "--help"){
                 if(i == 0){
                     show_help();
+                    return;
                 }
                 else{
                     throw std::runtime_error("show - invalid usage of --help\n usage jrnlc show --help \n");
@@ -224,6 +227,7 @@ void backup_handle(int argc, char** argv){
             if(arg == "--help"){
                 if(i == 0){
                     backup_help();
+                    return;
                 }
                 else{
                     throw std::runtime_error("backup - invalid usage of --help\n usage jrnlc backup --help \n");
