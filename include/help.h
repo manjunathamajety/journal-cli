@@ -6,5 +6,6 @@
 void global_help();
 void add_help();
 void show_help();
-
+void backup_help();
+void init_help();
 #endif

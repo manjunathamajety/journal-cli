@@ -13,7 +13,7 @@ void init_handle(int argc, char** argv);
 
 void add_handle(int argc,char** argv);
 
-void display_handle(int argc,char** argv);
+void show_handle(int argc,char** argv);
 
 void backup_handle(int argc, char** argv);
 

@@ -1,73 +1,103 @@
 #include <help.h>
 
-
 void global_help() {
     std::cout
-        << "jrnl - a tiny terminal jrnl for your secrets\n"
+        << "jrnl — a tiny, plain-text terminal journal\n"
         << "\n"
         << "Usage:\n"
-        << "  jrnl add <entry> [tag]\n"
-        << "      Add a new journal entry.\n"
-        << "      - <entry>   : the text you want to store.\n"
-        << "      - [tag]     : optional label for the entry.\n"
-        << "      If no arguments are given, jrnl will read a single line\n"
-        << "      from stdin (you can also pipe text into it).\n"
+        << "  jrnl <command> [options]\n"
         << "\n"
-        << "  jrnl show [range]\n"
-        << "      Show journal entries.\n"
-        << "      If no range is given, jrnl shows all entries.\n"
+        << "Commands:\n"
+        << "  init        Initialize a journal\n"
+        << "  add         Add a new entry\n"
+        << "  show        Display entries\n"
+        << "  backup      Create a journal backup\n"
+        << "  help        Show help for a command\n"
         << "\n"
-        << "Ranges:\n"
-        << "  *       : show all entries\n"
-        << "  N       : show only entry with id N\n"
-        << "  *N      : show the first N entries\n"
-        << "  N*      : show the last N entries\n"
+        << "Common options:\n"
+        << "  --local     Operate on local journal (default if present)\n"
+        << "  --global    Operate on global journal\n"
         << "\n"
-        << "Examples:\n"
-        << "  jrnl add \"met a cat today\" mood\n"
-        << "  echo \"pipe this into the eternity\" | jrnl add\n"
-        << "  jrnl show *\n"
-        << "  jrnl show 3\n"
-        << "  jrnl show *10\n"
-        << "  jrnl show 5*\n"
+        << "Ranges (used with `show`):\n"
+        << "  *       All entries\n"
+        << "  N       Entry with id N\n"
+        << "  *N      First N entries\n"
+        << "  N*      Last N entries\n"
         << "\n"
-        << "Your secrets are stored where your config tells them to be.\n"
-        << "If jrnl can't find its config, it will quietly create one for you.\n";
+        << "Example:\n"
+        << "  jrnl add \"met a cat\" mood\n"
+        << "  jrnl show *10 --global\n";
 }
-
-
 
 void add_help() {
     std::cout
-        << "jrnl add - add a new entry to your journal\n"
+        << "jrnl add — add a journal entry\n"
         << "\n"
         << "Usage:\n"
-        << "  jrnl add <entry> [tag]\n"
+        << "  jrnl add <entry> [tag] [--local|--global]\n"
+        << "  jrnl add              (read entry from stdin)\n"
         << "\n"
-        << "Behavior:\n"
-        << "  - If <entry> is provided as an argument, jrnl uses that.\n"
-        << "  - If [tag] is provided, it is stored alongside the entry.\n"
-        << "  - If no arguments are given, jrnl reads a single line from stdin.\n"
+        << "Options:\n"
+        << "  --local     Use local journal\n"
+        << "  --global    Use global journal\n"
         << "\n"
-        << "jrnl will make sure the journal file and directories exist.\n"
-        << "If the universe refuses to cooperate, it will loudly complain and hopefully, not break :)\n";
+        << "Notes:\n"
+        << "  - If no entry is given, a single line is read from stdin\n"
+        << "  - Journal files and directories are created automatically\n";
 }
-
 
 void show_help() {
     std::cout
-        << "jrnl show - display entries from your journal\n"
+        << "jrnl show — display journal entries\n"
         << "\n"
         << "Usage:\n"
-        << "  jrnl show [range]\n"
+        << "  jrnl show [range] [--local|--global]\n"
         << "\n"
         << "Ranges:\n"
-        << "  *       : show all entries\n"
-        << "  N       : show only entry with id N\n"
-        << "  *N      : show the first N entries\n"
-        << "  N*      : show the last N entries\n"
+        << "  *       All entries\n"
+        << "  N       Entry with id N\n"
+        << "  *N      First N entries\n"
+        << "  N*      Last N entries\n"
         << "\n"
-        << "If you edit the jrnl file by hand and break something,\n"
-        << "jrnl will try and skip entries and bail out on you.\n";
+        << "Options:\n"
+        << "  --local     Use local journal\n"
+        << "  --global    Use global journal\n"
+        << "\n"
+        << "Notes:\n"
+        << "  - Malformed entries may be skipped\n";
 }
+
+void init_help() {
+    std::cout
+        << "jrnl init — initialize a journal\n"
+        << "\n"
+        << "Usage:\n"
+        << "  jrnl init --local\n"
+        << "  jrnl init --global\n"
+        << "\n"
+        << "Options:\n"
+        << "  --local     Create a journal in the current directory\n"
+        << "  --global    Create a user-wide journal\n"
+        << "\n"
+        << "Notes:\n"
+        << "  - Creates journal files, directories, and config if missing\n"
+        << "  - Existing journals are not overwritten\n";
+}
+
+void backup_help() {
+    std::cout
+        << "jrnl backup — create a journal backup\n"
+        << "\n"
+        << "Usage:\n"
+        << "  jrnl backup [name] [--local|--global]\n"
+        << "\n"
+        << "Options:\n"
+        << "  --local     Backup local journal\n"
+        << "  --global    Backup global journal\n"
+        << "\n"
+        << "Notes:\n"
+        << "  - If no name is provided, a timestamp is used\n"
+        << "  - Backups are written to the configured backup directory\n";
+}
+
 

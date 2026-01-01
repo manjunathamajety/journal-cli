@@ -2,6 +2,7 @@
 #include <time.h>
 #include <jrnlmanager.h>
 #include <config.h>
+#include <help.h>
 
 void init_handle(int argc, char** argv){
     if(argc == 0){
@@ -20,8 +21,11 @@ void init_handle(int argc, char** argv){
             config c1;
             c1.local_init();
         }
+        else if(flag == "--help"){
+            init_help();
+        }
         else{
-            throw std::runtime_error("jrnlc: init - invalid flag \n Usage jrnlc init [--global/--local]");
+            throw std::runtime_error("init - invalid flag \n Usage jrnlc init [--global/--local] \n Use jrncl init --help \n");
         }
     }
 
@@ -52,6 +56,14 @@ void add_handle(int argc, char** argv){
         for(int i = 0; i < argc; i++){
             std::string arg = argv[i];
             //checking if any of the flags match with the argv vector
+            if(arg == "--help"){
+                if(i == 0){
+                    add_help();
+                }
+                else{
+                    throw std::runtime_error("add - invalid usage of --help \n Usage jrnlc add --help \n");
+                }
+            }
             if(arg == "--local"){
                 is_local = true;
             }
@@ -60,7 +72,7 @@ void add_handle(int argc, char** argv){
             }
             else if(arg == "--tag"){
                 if(i+1 >= argc){
-                    throw std::runtime_error("Unspecified tag: usage --tag [tag]");                }
+                    throw std::runtime_error("add - unspecified tag: usage --tag [tag]\n");                }
                 else{
                     tag_buf = argv[i+1];
                     i++;
@@ -68,7 +80,7 @@ void add_handle(int argc, char** argv){
             }
             else {
                 if(got_entry){
-                    throw std::runtime_error("jrnlc: too many positional arguments for add \n Usage jrnlc add [entry] --tag [tag] [--local/--global]\n");
+                    throw std::runtime_error("add - too many positional arguments for add \n Usage jrnlc add [entry] --tag [tag] [--local/--global]\n");
                 }
                 else{
                     entry = arg;
@@ -76,28 +88,29 @@ void add_handle(int argc, char** argv){
                 }
             }
         }
-    }
+    
 
-    if(!got_entry){
-        if(!std::getline(std::cin,entry) || entry.empty()){
-            throw std::runtime_error("jrnlc: no entry provided");
+        if(!got_entry){
+            if(!std::getline(std::cin,entry) || entry.empty()){
+                throw std::runtime_error("add - no entry provided");
+            }
         }
+        c1.resolve_local_or_global(is_local);
+        std::string PATH = c1.get_path();
+        std::string BACKUP_PATH = c1.get_backup();
+        Manager m1(PATH,BACKUP_PATH);
+        m1.loadentry(PATH);
+        if(tag_buf.empty()){
+            m1.addentry(entry);
+        }
+        else{
+            m1.addentry(entry, tag_buf);
+        }
+        m1.save(PATH);
     }
-    c1.resolve_local_or_global(is_local);
-    std::string PATH = c1.get_path();
-    std::string BACKUP_PATH = c1.get_backup();
-    Manager m1(PATH,BACKUP_PATH);
-    m1.loadentry(PATH);
-    if(tag_buf.empty()){
-        m1.addentry(entry);
-    }
-    else{
-        m1.addentry(entry, tag_buf);
-    }
-    m1.save(PATH);
 }
 
-void display_handle(int argc, char** argv){
+void show_handle(int argc, char** argv){
     //reading the config file for path
     config c1;
     c1.parseconfig();
@@ -115,10 +128,19 @@ void display_handle(int argc, char** argv){
         for(int i = 0; i < argc; i++){
             std::string arg = argv[i];
             //checking if any of the flags match with the argv vector
-            //--before flag
-            if(arg == "--before"){
+            //help flag
+            if(arg == "--help"){
+                if(i == 0){
+                    show_help();
+                }
+                else{
+                    throw std::runtime_error("show - invalid usage of --help\n usage jrnlc show --help \n");
+                }
+            }
+            //before flag
+            else if(arg == "--before"){
                 if(i+1 >= argc){
-                    throw std::runtime_error("Unspecified time range; usage - jrnlc --before YYYY-MM-DD HH:MM");
+                    throw std::runtime_error("show - unspecified time range; usage - jrnlc --before YYYY-MM-DD HH:MM");
                 }
                 else{
                     std::string time = argv[i+1];
@@ -129,7 +151,7 @@ void display_handle(int argc, char** argv){
             //--after flag
             else if(arg == "--after"){
                 if(i+1 >= argc){
-                    throw std::runtime_error("Unspecified time range; usage - jrnlc --before YYYY-MM-DD HH:MM");
+                    throw std::runtime_error("show - unspecified time range; usage - jrnlc --before YYYY-MM-DD HH:MM");
                 }
                 else{
                     std::string time = argv[i+1];
@@ -152,7 +174,7 @@ void display_handle(int argc, char** argv){
             //so range SHOULD be the only term accepted which doesn't start with '--'
             else if(arg.size() < 2 || arg[0] != '-' || arg[1] != '-'){
                 if(flags.range){
-                    throw std::runtime_error("jrnlc: too many arguments for range \n");
+                    throw std::runtime_error("show - too many arguments for range \n");
                 }
                 else{
                     flags.range = argv[i];
@@ -199,7 +221,15 @@ void backup_handle(int argc, char** argv){
     else{
         for(int i = 0; i < argc; i++){
             std::string arg = argv[i];
-            if(arg == "--local"){
+            if(arg == "--help"){
+                if(i == 0){
+                    backup_help();
+                }
+                else{
+                    throw std::runtime_error("backup - invalid usage of --help\n usage jrnlc backup --help \n");
+                }
+            }
+            else if(arg == "--local"){
                 is_local = true;
             }
             else if(arg == "--global"){
@@ -211,7 +241,7 @@ void backup_handle(int argc, char** argv){
                     got_name = true;
                 }
                 else{
-                    throw std::runtime_error("jrnlc: backup - too many positional arguments \n Usage jrnlc backup [name-optional] [--local/--global]\n");
+                    throw std::runtime_error("backup - too many positional arguments \n Usage jrnlc backup [name-optional] [--local/--global]\n");
                 }
             }
         }    
